@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VNeID">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="img/icon-180.png">
+<link rel="apple-touch-icon" sizes="512x512" href="img/icon-512.png">
+<link rel="icon" type="image/png" sizes="512x512" href="img/icon-512.png">
+<title>VNeID</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #000;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        font-family: -apple-system, Roboto, Arial, sans-serif;
+    }
+    .screen {
+        display: none;
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background-size: 100% 100%;
+        background-position: center top;
+        background-repeat: no-repeat;
+    }
+    .screen.active { display: block; }
+    .hotspot {
+        position: absolute;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+    .keyboard {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #d1d5db;
+        padding: 8px 4px;
+        display: none;
+        z-index: 100;
+    }
+    .keyboard.show { display: block; }
+    .kb-row {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+    .kb-key {
+        background: #fff;
+        border-radius: 6px;
+        padding: 12px 0;
+        flex: 1;
+        text-align: center;
+        font-size: 20px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        cursor: pointer;
+        user-select: none;
+    }
+    .kb-key:active { background: #e5e7eb; }
+    .kb-key.wide { flex: 1.5; font-size: 14px; }
+    .kb-key.space { flex: 5; }
+    .pwd-display {
+        position: absolute;
+        left: 4%;
+        top: 36%;
+        width: 92%;
+        height: 6%;
+        display: flex;
+        align-items: center;
+        padding-left: 10%;
+        font-size: 28px;
+        font-weight: bold;
+        letter-spacing: 6px;
+        color: #000;
+        pointer-events: none;
+        z-index: 2;
+    }
+    .pwd-cover {
+        position: absolute;
+        left: 10%;
+        top: 36%;
+        width: 80%;
+        height: 6%;
+        background: #fff;
+        display: none;
+        z-index: 1;
+    }
+    .pwd-cover.show { display: block; }
+    .dot {
+        position: absolute;
+        width: 7.5%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        background: #d1d5db;
+        transition: background 0.15s;
+        pointer-events: none;
+    }
+    .dot.filled { background: #ffc107; }
+</style>
+</head>
+<body>
+
+<div id="s1" class="screen active" style="background-image: url('img/1.png');">
+    <div class="pwd-cover" id="pwdCover"></div>
+    <div class="pwd-display" id="pwdDisplay"></div>
+    <div class="hotspot" style="left: 4%; top: 36%; width: 92%; height: 6%;" onclick="showKeyboard()"></div>
+    <div class="hotspot" style="left: 4%; top: 44%; width: 92%; height: 6%;" onclick="login()"></div>
+    <div class="keyboard" id="keyboard">
+        <div class="kb-row">
+            <div class="kb-key" onclick="typeKey('q')">q</div>
+            <div class="kb-key" onclick="typeKey('w')">w</div>
+            <div class="kb-key" onclick="typeKey('e')">e</div>
+            <div class="kb-key" onclick="typeKey('r')">r</div>
+            <div class="kb-key" onclick="typeKey('t')">t</div>
+            <div class="kb-key" onclick="typeKey('y')">y</div>
+            <div class="kb-key" onclick="typeKey('u')">u</div>
+            <div class="kb-key" onclick="typeKey('i')">i</div>
+            <div class="kb-key" onclick="typeKey('o')">o</div>
+            <div class="kb-key" onclick="typeKey('p')">p</div>
+        </div>
+        <div class="kb-row">
+            <div class="kb-key" onclick="typeKey('a')">a</div>
+            <div class="kb-key" onclick="typeKey('s')">s</div>
+            <div class="kb-key" onclick="typeKey('d')">d</div>
+            <div class="kb-key" onclick="typeKey('f')">f</div>
+            <div class="kb-key" onclick="typeKey('g')">g</div>
+            <div class="kb-key" onclick="typeKey('h')">h</div>
+            <div class="kb-key" onclick="typeKey('j')">j</div>
+            <div class="kb-key" onclick="typeKey('k')">k</div>
+            <div class="kb-key" onclick="typeKey('l')">l</div>
+        </div>
+        <div class="kb-row">
+            <div class="kb-key wide" onclick="typeKey('shift')">⇧</div>
+            <div class="kb-key" onclick="typeKey('z')">z</div>
+            <div class="kb-key" onclick="typeKey('x')">x</div>
+            <div class="kb-key" onclick="typeKey('c')">c</div>
+            <div class="kb-key" onclick="typeKey('v')">v</div>
+            <div class="kb-key" onclick="typeKey('b')">b</div>
+            <div class="kb-key" onclick="typeKey('n')">n</div>
+            <div class="kb-key" onclick="typeKey('m')">m</div>
+            <div class="kb-key wide" onclick="backspace()">⌫</div>
+        </div>
+        <div class="kb-row">
+            <div class="kb-key wide" onclick="typeKey('123')">123</div>
+            <div class="kb-key space" onclick="typeKey(' ')">space</div>
+            <div class="kb-key wide" onclick="hideKeyboard()">Ẩn</div>
+        </div>
+    </div>
+</div>
+
+<div id="s2" class="screen" style="background-image: url('img/2.png');">
+    <div class="hotspot" style="left: 22%; top: 92%; width: 18%; height: 8%;" onclick="go('s3')"></div>
+</div>
+
+<div id="s3" class="screen" style="background-image: url('img/3.png');">
+    <div class="hotspot" style="left: 28%; top: 44%; width: 44%; height: 4%;" onclick="go('s4')"></div>
+    <div class="hotspot" style="left: 3%; top: 92%; width: 18%; height: 8%;" onclick="go('s2')"></div>
+</div>
+
+<div id="s4" class="screen" style="background-image: url('img/4.png');">
+    <div class="dot" id="dot0" style="left: 7.5%; top: 44.5%;"></div>
+    <div class="dot" id="dot1" style="left: 22.92%; top: 44.5%;"></div>
+    <div class="dot" id="dot2" style="left: 38.33%; top: 44.5%;"></div>
+    <div class="dot" id="dot3" style="left: 53.75%; top: 44.5%;"></div>
+    <div class="dot" id="dot4" style="left: 69.17%; top: 44.5%;"></div>
+    <div class="dot" id="dot5" style="left: 84.58%; top: 44.5%;"></div>
+    <div class="hotspot" style="left: 8%; top: 68%; width: 24%; height: 10%;" onclick="pass('1')"></div>
+    <div class="hotspot" style="left: 38%; top: 68%; width: 24%; height: 10%;" onclick="pass('2')"></div>
+    <div class="hotspot" style="left: 68%; top: 68%; width: 24%; height: 10%;" onclick="pass('3')"></div>
+    <div class="hotspot" style="left: 8%; top: 80%; width: 24%; height: 10%;" onclick="pass('4')"></div>
+    <div class="hotspot" style="left: 38%; top: 80%; width: 24%; height: 10%;" onclick="pass('5')"></div>
+    <div class="hotspot" style="left: 68%; top: 80%; width: 24%; height: 10%;" onclick="pass('6')"></div>
+    <div class="hotspot" style="left: 8%; top: 92%; width: 24%; height: 10%;" onclick="pass('7')"></div>
+    <div class="hotspot" style="left: 38%; top: 92%; width: 24%; height: 10%;" onclick="pass('8')"></div>
+    <div class="hotspot" style="left: 68%; top: 92%; width: 24%; height: 10%;" onclick="pass('9')"></div>
+    <div class="hotspot" style="left: 38%; top: 104%; width: 24%; height: 10%;" onclick="pass('0')"></div>
+    <div class="hotspot" style="left: 90%; top: 8%; width: 8%; height: 5%;" onclick="resetPass(); go('s3')"></div>
+</div>
+
+<div id="s5" class="screen" style="background-image: url('img/5.png');">
+    <div class="hotspot" style="left: 2%; top: 3%; width: 10%; height: 5%;" onclick="go('s3')"></div>
+</div>
+
+<script>
+    function go(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+    let pwd = '';
+    function showKeyboard() { document.getElementById('keyboard').classList.add('show'); }
+    function hideKeyboard() { document.getElementById('keyboard').classList.remove('show'); }
+    function typeKey(k) {
+        if (k === 'shift' || k === '123') return;
+        pwd += k;
+        updatePwd();
+    }
+    function backspace() { pwd = pwd.slice(0, -1); updatePwd(); }
+    function updatePwd() {
+        document.getElementById('pwdDisplay').textContent = '*'.repeat(pwd.length);
+        if (pwd.length > 0) {
+            document.getElementById('pwdCover').classList.add('show');
+        } else {
+            document.getElementById('pwdCover').classList.remove('show');
+        }
+    }
+    function login() { hideKeyboard(); go('s2'); }
+    let passBuffer = '';
+    function pass(num) {
+        if (passBuffer.length >= 6) return;
+        passBuffer += num;
+        updateDots();
+        if (passBuffer.length === 6) {
+            setTimeout(() => { go('s5'); }, 200);
+        }
+    }
+    function updateDots() {
+        for (let i = 0; i < 6; i++) {
+            const dot = document.getElementById('dot' + i);
+            if (i < passBuffer.length) dot.classList.add('filled');
+            else dot.classList.remove('filled');
+        }
+    }
+    function resetPass() { passBuffer = ''; updateDots(); }
+    document.addEventListener('gesturestart', e => e.preventDefault());
+    let lastTouch = 0;
+    document.addEventListener('touchend', e => {
+        const now = Date.now();
+        if (now - lastTouch <= 300) e.preventDefault();
+        lastTouch = now;
+    }, { passive: false });
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js');
+    }
+</script>
+
+</body>
+</html>
