@@ -199,18 +199,32 @@
         display: block;
     }
 
+    /* Style chuẩn cho ô passcode giống ảnh mẫu */
     .dot {
         position: absolute;
         width: 7.5%;
         aspect-ratio: 1;
         border-radius: 50%;
-        background: #d1d5db;
-        transition: background 0.15s;
+        border: 2px solid #d1d5db;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: border-color 0.15s;
         pointer-events: none;
     }
 
+    /* Chấm vàng nhỏ nằm chính giữa */
     .dot.filled {
+        border-color: #ffc107;
+    }
+
+    .dot.filled::after {
+        content: '';
+        width: 65%;
+        height: 65%;
         background: #ffc107;
+        border-radius: 50%;
     }
 </style>
 </head>
@@ -461,4 +475,4 @@
 
 </body>
 </html>
-```[cite: 2, 6]
+```[cite: 2, 6, 7, 8]
