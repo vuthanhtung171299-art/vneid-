@@ -178,7 +178,7 @@
         padding-left: 10%;
         font-size: 28px;
         font-weight: bold;
-        letter-spacing: 6px;
+        letter-spacing: 4px; /* Giảm khoảng cách xuống 4px */
         color: #000;
         pointer-events: none;
         z-index: 2;
@@ -302,7 +302,6 @@
 </div>
 
 <div id="s4" class="screen" style="background-image: url('img/4.png');">
-    <!-- Chấm đặc đã dịch phải và hạ xuống thêm 0,5mm -->
     <div class="placeholder-dot" id="dot0" style="left: 8.25%; top: 44.55%;"></div>
     <div class="placeholder-dot" id="dot1" style="left: 23.67%; top: 44.55%;"></div>
     <div class="placeholder-dot" id="dot2" style="left: 39.08%; top: 44.55%;"></div>
@@ -394,7 +393,7 @@
 
     function updatePwd() {
         document.getElementById('pwdDisplay').textContent =
-            '*'.repeat(pwd.length);
+            '•'.repeat(pwd.length);
 
         if (pwd.length > 0) {
             document.getElementById('pwdCover').classList.add('show');
