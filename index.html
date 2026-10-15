@@ -11,8 +11,14 @@
 <link rel="apple-touch-icon" sizes="512x512" href="img/icon-512.png">
 <link rel="icon" type="image/png" sizes="512x512" href="img/icon-512.png">
 <title>VNeID</title>
+
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
     html, body {
         width: 100%;
         height: 100%;
@@ -23,23 +29,97 @@
         -webkit-tap-highlight-color: transparent;
         font-family: -apple-system, Roboto, Arial, sans-serif;
     }
+
     .screen {
         display: none;
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
-        background-size: 100% 100%;
-        background-position: center top;
+        background-size: cover;
+        background-position: center;
         background-repeat: no-repeat;
     }
-    .screen.active { display: block; }
+
+    .screen.active {
+        display: block;
+    }
+
     .hotspot {
         position: absolute;
         background: transparent;
         border: none;
         cursor: pointer;
     }
+
+    /* Màn hình mở đầu */
+    #intro {
+        display: none;
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background: #000 url('img/modau.png') center center / cover no-repeat;
+        z-index: 200;
+    }
+
+    #intro.active {
+        display: block;
+    }
+
+    /* Lớp loading kiểu spinner vạch trắng */
+    #loading {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 999;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(2px);
+        pointer-events: all;
+    }
+
+    #loading.show {
+        display: flex;
+    }
+
+    .spinner-loader {
+        position: relative;
+        width: 48px;
+        height: 48px;
+        animation: spinner-rotate 0.8s steps(12, end) infinite;
+    }
+
+    .spinner-blade {
+        position: absolute;
+        left: 22px;
+        top: 2px;
+        width: 4px;
+        height: 12px;
+        background: #ffffff;
+        border-radius: 2px;
+        transform-origin: 2px 22px;
+    }
+
+    .spinner-blade:nth-child(1)  { transform: rotate(0deg); opacity: 1; }
+    .spinner-blade:nth-child(2)  { transform: rotate(30deg); opacity: 0.9; }
+    .spinner-blade:nth-child(3)  { transform: rotate(60deg); opacity: 0.8; }
+    .spinner-blade:nth-child(4)  { transform: rotate(90deg); opacity: 0.7; }
+    .spinner-blade:nth-child(5)  { transform: rotate(120deg); opacity: 0.6; }
+    .spinner-blade:nth-child(6)  { transform: rotate(150deg); opacity: 0.5; }
+    .spinner-blade:nth-child(7)  { transform: rotate(180deg); opacity: 0.4; }
+    .spinner-blade:nth-child(8)  { transform: rotate(210deg); opacity: 0.35; }
+    .spinner-blade:nth-child(9)  { transform: rotate(240deg); opacity: 0.3; }
+    .spinner-blade:nth-child(10) { transform: rotate(270deg); opacity: 0.25; }
+    .spinner-blade:nth-child(11) { transform: rotate(300deg); opacity: 0.2; }
+    .spinner-blade:nth-child(12) { transform: rotate(330deg); opacity: 0.15; }
+
+    @keyframes spinner-rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
     .keyboard {
         position: absolute;
         bottom: 0;
@@ -50,13 +130,18 @@
         display: none;
         z-index: 100;
     }
-    .keyboard.show { display: block; }
+
+    .keyboard.show {
+        display: block;
+    }
+
     .kb-row {
         display: flex;
         justify-content: center;
         gap: 6px;
         margin-bottom: 8px;
     }
+
     .kb-key {
         background: #fff;
         border-radius: 6px;
@@ -68,9 +153,20 @@
         cursor: pointer;
         user-select: none;
     }
-    .kb-key:active { background: #e5e7eb; }
-    .kb-key.wide { flex: 1.5; font-size: 14px; }
-    .kb-key.space { flex: 5; }
+
+    .kb-key:active {
+        background: #e5e7eb;
+    }
+
+    .kb-key.wide {
+        flex: 1.5;
+        font-size: 14px;
+    }
+
+    .kb-key.space {
+        flex: 5;
+    }
+
     .pwd-display {
         position: absolute;
         left: 4%;
@@ -87,6 +183,7 @@
         pointer-events: none;
         z-index: 2;
     }
+
     .pwd-cover {
         position: absolute;
         left: 10%;
@@ -97,7 +194,11 @@
         display: none;
         z-index: 1;
     }
-    .pwd-cover.show { display: block; }
+
+    .pwd-cover.show {
+        display: block;
+    }
+
     .dot {
         position: absolute;
         width: 7.5%;
@@ -107,16 +208,43 @@
         transition: background 0.15s;
         pointer-events: none;
     }
-    .dot.filled { background: #ffc107; }
+
+    .dot.filled {
+        background: #ffc107;
+    }
 </style>
 </head>
+
 <body>
 
-<div id="s1" class="screen active" style="background-image: url('img/1.png');">
+<!-- Ảnh mở đầu -->
+<div id="intro" class="active"></div>
+
+<!-- Loading Spinner Vạch Trắng -->
+<div id="loading">
+    <div class="spinner-loader">
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+        <div class="spinner-blade"></div>
+    </div>
+</div>
+
+<div id="s1" class="screen" style="background-image: url('img/1.png');">
     <div class="pwd-cover" id="pwdCover"></div>
     <div class="pwd-display" id="pwdDisplay"></div>
+
     <div class="hotspot" style="left: 4%; top: 36%; width: 92%; height: 6%;" onclick="showKeyboard()"></div>
     <div class="hotspot" style="left: 4%; top: 44%; width: 92%; height: 6%;" onclick="login()"></div>
+
     <div class="keyboard" id="keyboard">
         <div class="kb-row">
             <div class="kb-key" onclick="typeKey('q')">q</div>
@@ -130,6 +258,7 @@
             <div class="kb-key" onclick="typeKey('o')">o</div>
             <div class="kb-key" onclick="typeKey('p')">p</div>
         </div>
+
         <div class="kb-row">
             <div class="kb-key" onclick="typeKey('a')">a</div>
             <div class="kb-key" onclick="typeKey('s')">s</div>
@@ -141,6 +270,7 @@
             <div class="kb-key" onclick="typeKey('k')">k</div>
             <div class="kb-key" onclick="typeKey('l')">l</div>
         </div>
+
         <div class="kb-row">
             <div class="kb-key wide" onclick="typeKey('shift')">⇧</div>
             <div class="kb-key" onclick="typeKey('z')">z</div>
@@ -152,6 +282,7 @@
             <div class="kb-key" onclick="typeKey('m')">m</div>
             <div class="kb-key wide" onclick="backspace()">⌫</div>
         </div>
+
         <div class="kb-row">
             <div class="kb-key wide" onclick="typeKey('123')">123</div>
             <div class="kb-key space" onclick="typeKey(' ')">space</div>
@@ -176,6 +307,7 @@
     <div class="dot" id="dot3" style="left: 53.75%; top: 44.5%;"></div>
     <div class="dot" id="dot4" style="left: 69.17%; top: 44.5%;"></div>
     <div class="dot" id="dot5" style="left: 84.58%; top: 44.5%;"></div>
+
     <div class="hotspot" style="left: 8%; top: 68%; width: 24%; height: 10%;" onclick="pass('1')"></div>
     <div class="hotspot" style="left: 38%; top: 68%; width: 24%; height: 10%;" onclick="pass('2')"></div>
     <div class="hotspot" style="left: 68%; top: 68%; width: 24%; height: 10%;" onclick="pass('3')"></div>
@@ -194,53 +326,134 @@
 </div>
 
 <script>
-    function go(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        window.scrollTo(0, 0);
+    const intro = document.getElementById('intro');
+    const loading = document.getElementById('loading');
+
+    let isTransitioning = false;
+
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            intro.classList.remove('active');
+            go('s1', false);
+        }, 1000);
+    });
+
+    function go(id, useLoading = true) {
+        if (isTransitioning) return;
+
+        if (!useLoading) {
+            document.querySelectorAll('.screen').forEach(s => {
+                s.classList.remove('active');
+            });
+
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0, 0);
+            return;
+        }
+
+        isTransitioning = true;
+        loading.classList.add('show');
+
+        const delay = Math.floor(Math.random() * 151) + 350;
+
+        setTimeout(() => {
+            document.querySelectorAll('.screen').forEach(s => {
+                s.classList.remove('active');
+            });
+
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0, 0);
+
+            loading.classList.remove('show');
+            isTransitioning = false;
+        }, delay);
     }
+
     let pwd = '';
-    function showKeyboard() { document.getElementById('keyboard').classList.add('show'); }
-    function hideKeyboard() { document.getElementById('keyboard').classList.remove('show'); }
+
+    function showKeyboard() {
+        document.getElementById('keyboard').classList.add('show');
+    }
+
+    function hideKeyboard() {
+        document.getElementById('keyboard').classList.remove('show');
+    }
+
     function typeKey(k) {
         if (k === 'shift' || k === '123') return;
         pwd += k;
         updatePwd();
     }
-    function backspace() { pwd = pwd.slice(0, -1); updatePwd(); }
+
+    function backspace() {
+        pwd = pwd.slice(0, -1);
+        updatePwd();
+    }
+
     function updatePwd() {
-        document.getElementById('pwdDisplay').textContent = '*'.repeat(pwd.length);
+        document.getElementById('pwdDisplay').textContent =
+            '*'.repeat(pwd.length);
+
         if (pwd.length > 0) {
             document.getElementById('pwdCover').classList.add('show');
         } else {
             document.getElementById('pwdCover').classList.remove('show');
         }
     }
-    function login() { hideKeyboard(); go('s2'); }
+
+    function login() {
+        hideKeyboard();
+        go('s2');
+    }
+
     let passBuffer = '';
+
     function pass(num) {
-        if (passBuffer.length >= 6) return;
+        if (isTransitioning || passBuffer.length >= 6) return;
+
         passBuffer += num;
         updateDots();
+
         if (passBuffer.length === 6) {
-            setTimeout(() => { go('s5'); }, 200);
+            setTimeout(() => {
+                go('s5');
+            }, 200);
         }
     }
+
     function updateDots() {
         for (let i = 0; i < 6; i++) {
             const dot = document.getElementById('dot' + i);
-            if (i < passBuffer.length) dot.classList.add('filled');
-            else dot.classList.remove('filled');
+
+            if (i < passBuffer.length) {
+                dot.classList.add('filled');
+            } else {
+                dot.classList.remove('filled');
+            }
         }
     }
-    function resetPass() { passBuffer = ''; updateDots(); }
-    document.addEventListener('gesturestart', e => e.preventDefault());
+
+    function resetPass() {
+        passBuffer = '';
+        updateDots();
+    }
+
+    document.addEventListener('gesturestart', e => {
+        e.preventDefault();
+    });
+
     let lastTouch = 0;
+
     document.addEventListener('touchend', e => {
         const now = Date.now();
-        if (now - lastTouch <= 300) e.preventDefault();
+
+        if (now - lastTouch <= 300) {
+            e.preventDefault();
+        }
+
         lastTouch = now;
     }, { passive: false });
+
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('service-worker.js');
     }
@@ -248,3 +461,4 @@
 
 </body>
 </html>
+```[cite: 2]
