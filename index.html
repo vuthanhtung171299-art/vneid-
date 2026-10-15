@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -199,20 +200,36 @@
         display: block;
     }
 
-    /* Style chấm passcode: vòng tròn xám, khi filled chuyển sang vàng đặc */
+    /* Style chấm passcode chuẩn khít không lệch tâm */
     .dot {
         position: absolute;
         width: 7.5%;
         aspect-ratio: 1;
         border-radius: 50%;
-        border: 2px solid #d1d5db;
+        border: 2px solid rgba(200, 200, 200, 0.7);
         background: transparent;
-        transition: all 0.15s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         pointer-events: none;
+    }
+
+    /* Tạo lớp nhân bên trong căn giữa hoàn hảo */
+    .dot::after {
+        content: '';
+        width: 68%0; /* fallback nếu cần */
+        width: 68%;
+        height: 68%;
+        border-radius: 50%;
+        background: #d1d5db;
+        transition: background 0.15s ease;
     }
 
     .dot.filled {
         border-color: #ffc107;
+    }
+
+    .dot.filled::after {
         background: #ffc107;
     }
 </style>
@@ -464,4 +481,6 @@
 
 </body>
 </html>
-```[cite: 2, 6, 7, 8]
+```[cite: 2, 6, 7, 8, 9, 10]
+
+```
