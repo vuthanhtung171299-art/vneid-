@@ -199,19 +199,19 @@
         display: block;
     }
 
-    /* Chỉ giữ lại style cho chấm ghi đè */
+    /* Chấm đặc ghi đè chuẩn vị trí */
     .placeholder-dot {
         position: absolute;
         width: 6.8%;
         aspect-ratio: 1;
         border-radius: 50%;
-        background: transparent; /* Mặc định trong suốt để lộ hình xám ở ảnh nền */
+        background: transparent;
         transition: background 0.15s ease;
         pointer-events: none;
     }
 
     .placeholder-dot.filled {
-        background: #ffc107; /* Khi nhập thì đổi sang màu vàng */
+        background: #ffc107;
     }
 </style>
 </head>
@@ -302,13 +302,13 @@
 </div>
 
 <div id="s4" class="screen" style="background-image: url('img/4.png');">
-    <!-- Chỉ giữ lại nhóm chấm ghi đè đúng vị trí -->
-    <div class="placeholder-dot" id="dot0" style="left: 9.2%; top: 29.5%;"></div>
-    <div class="placeholder-dot" id="dot1" style="left: 24.4%; top: 29.5%;"></div>
-    <div class="placeholder-dot" id="dot2" style="left: 39.6%; top: 29.5%;"></div>
-    <div class="placeholder-dot" id="dot3" style="left: 54.8%; top: 29.5%;"></div>
-    <div class="placeholder-dot" id="dot4" style="left: 70.0%; top: 29.5%;"></div>
-    <div class="placeholder-dot" id="dot5" style="left: 85.2%; top: 29.5%;"></div>
+    <!-- Chấm đặc đã được hạ xuống vị trí chuẩn và dịch trái -->
+    <div class="placeholder-dot" id="dot0" style="left: 8.5%; top: 29.5%;"></div>
+    <div class="placeholder-dot" id="dot1" style="left: 23.7%; top: 29.5%;"></div>
+    <div class="placeholder-dot" id="dot2" style="left: 38.9%; top: 29.5%;"></div>
+    <div class="placeholder-dot" id="dot3" style="left: 54.1%; top: 29.5%;"></div>
+    <div class="placeholder-dot" id="dot4" style="left: 69.3%; top: 29.5%;"></div>
+    <div class="placeholder-dot" id="dot5" style="left: 84.5%; top: 29.5%;"></div>
 
     <div class="hotspot" style="left: 8%; top: 68%; width: 24%; height: 10%;" onclick="pass('1')"></div>
     <div class="hotspot" style="left: 38%; top: 68%; width: 24%; height: 10%;" onclick="pass('2')"></div>
