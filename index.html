@@ -199,8 +199,39 @@
         display: block;
     }
 
-    /* Chấm passcode khớp khít với ảnh nền */
-    .dot {
+    /* Nhóm chấm passcode ở TRÊN */
+    .passcode-dot {
+        position: absolute;
+        width: 7.5%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 2px solid rgba(210, 210, 210, 0.8);
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+    }
+
+    .passcode-dot::after {
+        content: '';
+        width: 65%;
+        height: 65%;
+        border-radius: 50%;
+        background: #d1d5db;
+        transition: background 0.15s ease;
+    }
+
+    .passcode-dot.filled {
+        border-color: #ffc107;
+    }
+
+    .passcode-dot.filled::after {
+        background: #ffc107;
+    }
+
+    /* Nhóm chấm ghi đè ở DƯỚI (Đã căn chỉnh lại lệch trái và hạ xuống) */
+    .placeholder-dot {
         position: absolute;
         width: 6.8%;
         aspect-ratio: 1;
@@ -210,7 +241,7 @@
         pointer-events: none;
     }
 
-    .dot.filled {
+    .placeholder-dot.filled {
         background: #ffc107;
     }
 </style>
@@ -302,12 +333,21 @@
 </div>
 
 <div id="s4" class="screen" style="background-image: url('img/4.png');">
-    <div class="dot" id="dot0" style="left: 10.8%; top: 25.8%;"></div>
-    <div class="dot" id="dot1" style="left: 26.0%; top: 25.8%;"></div>
-    <div class="dot" id="dot2" style="left: 41.2%; top: 25.8%;"></div>
-    <div class="dot" id="dot3" style="left: 56.4%; top: 25.8%;"></div>
-    <div class="dot" id="dot4" style="left: 71.6%; top: 25.8%;"></div>
-    <div class="dot" id="dot5" style="left: 86.8%; top: 25.8%;"></div>
+    <!-- Nhóm chấm TRÊN -->
+    <div class="passcode-dot" id="passDot0" style="left: 7.5%; top: 44.5%;"></div>
+    <div class="passcode-dot" id="passDot1" style="left: 22.92%; top: 44.5%;"></div>
+    <div class="passcode-dot" id="passDot2" style="left: 38.33%; top: 44.5%;"></div>
+    <div class="passcode-dot" id="passDot3" style="left: 53.75%; top: 44.5%;"></div>
+    <div class="passcode-dot" id="passDot4" style="left: 69.17%; top: 44.5%;"></div>
+    <div class="passcode-dot" id="passDot5" style="left: 84.58%; top: 44.5%;"></div>
+
+    <!-- Nhóm chấm DƯỚI (Đã dịch trái và hạ thấp) -->
+    <div class="placeholder-dot" id="dot0" style="left: 9.2%; top: 29.5%;"></div>
+    <div class="placeholder-dot" id="dot1" style="left: 24.4%; top: 29.5%;"></div>
+    <div class="placeholder-dot" id="dot2" style="left: 39.6%; top: 29.5%;"></div>
+    <div class="placeholder-dot" id="dot3" style="left: 54.8%; top: 29.5%;"></div>
+    <div class="placeholder-dot" id="dot4" style="left: 70.0%; top: 29.5%;"></div>
+    <div class="placeholder-dot" id="dot5" style="left: 85.2%; top: 29.5%;"></div>
 
     <div class="hotspot" style="left: 8%; top: 68%; width: 24%; height: 10%;" onclick="pass('1')"></div>
     <div class="hotspot" style="left: 38%; top: 68%; width: 24%; height: 10%;" onclick="pass('2')"></div>
@@ -424,12 +464,15 @@
 
     function updateDots() {
         for (let i = 0; i < 6; i++) {
-            const dot = document.getElementById('dot' + i);
+            const passDot = document.getElementById('passDot' + i);
+            const placeholderDot = document.getElementById('dot' + i);
 
             if (i < passBuffer.length) {
-                dot.classList.add('filled');
+                if (passDot) passDot.classList.add('filled');
+                if (placeholderDot) placeholderDot.classList.add('filled');
             } else {
-                dot.classList.remove('filled');
+                if (passDot) passDot.classList.remove('filled');
+                if (placeholderDot) placeholderDot.classList.remove('filled');
             }
         }
     }
